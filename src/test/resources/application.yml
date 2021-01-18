@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: eventbus-spring-boot-starter
+
+event-bus:
+  executor:
+    core-pool-size: 2
+    maximum-pool-size: 10
+    keep-alive-time: 30000
+    queue-size: 10
+    exception-handler: com.github.zht.eventbus.exception.DefaultSubscriberExceptionHandler
+
