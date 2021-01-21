@@ -7,6 +7,8 @@ import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
+import java.util.Arrays;
+
 /**
  * @Author zht
  * @Description
@@ -35,6 +37,16 @@ public class EventBusAnnotationPostProcessor implements BeanPostProcessor {
             }else {
                 eventBusFactory.asyncRegister(bean);
             }
+        }else {
+            Class<?>[] interfaces = aClass.getInterfaces();
+            Arrays.stream(interfaces).filter(c -> "com.github.zht.eventbus.listener.EventBusListener".equals(c.getName()))
+                    .findFirst().ifPresent(c -> {
+                eventBusFactory.register(bean);
+            });
+            Arrays.stream(interfaces).filter(c -> "com.github.zht.eventbus.listener.AsyncEventBusListener".equals(c.getName()))
+                    .findFirst().ifPresent(c -> {
+                eventBusFactory.asyncRegister(bean);
+            });
         }
         return bean;
     }

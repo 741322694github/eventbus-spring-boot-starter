@@ -5,10 +5,10 @@ import com.google.common.eventbus.Subscribe;
 
 /**
  * @Author zht
- * @Description 事件总线监听接口
+ * @Description 异步事件总线监听接口
  * @Date 2021/1/15
  */
-public interface EventBusListener<T extends BaseEvent> {
+public interface AsyncEventBusListener<T extends BaseEvent> {
 
     @Subscribe
     void subscribe(T event);

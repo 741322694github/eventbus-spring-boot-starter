@@ -2,6 +2,7 @@ package com.github.zht.eventbus.factory;
 
 import com.github.zht.eventbus.configuration.EventBusProperties;
 import com.github.zht.eventbus.event.BaseEvent;
+import com.github.zht.eventbus.exception.DefaultSubscriberExceptionHandler;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.SubscriberExceptionContext;
@@ -49,12 +50,12 @@ public class DefaultEventBusFactory implements EventBusFactory {
             handler = new SubscriberExceptionHandler() {
                 @Override
                 public void handleException(Throwable throwable, SubscriberExceptionContext subscriberExceptionContext) {
-                    // 这里可以埋个钩子,当出现异常时调用钩子
                     BaseEvent event = (BaseEvent)subscriberExceptionContext.getEvent();
                     if(event != null && event.getCallback() != null){
                         event.getCallback().apply(event,throwable);
                     }else {
-                        log.error("Event id "+event.getId()+" execute fail by {}"+throwable);
+                        DefaultSubscriberExceptionHandler defaultSubscriberExceptionHandler = new DefaultSubscriberExceptionHandler();
+                        defaultSubscriberExceptionHandler.handleException(throwable, subscriberExceptionContext);
                     }
                 }
             };
@@ -91,11 +92,11 @@ public class DefaultEventBusFactory implements EventBusFactory {
         asyncEventBus.unregister(listener);
     }
 
-    public static void post(Object event){
+    public static void post(BaseEvent event){
         eventBus.post(event);
     }
 
-    public static void asyncPost(Object event){
+    public static void asyncPost(BaseEvent event){
         asyncEventBus.post(event);
     }
 

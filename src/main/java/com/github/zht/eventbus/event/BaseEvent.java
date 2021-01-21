@@ -43,4 +43,13 @@ public class BaseEvent implements Serializable {
     public void setCallback(BiFunction<BaseEvent, Throwable, Class<Void>> callback) {
         this.callback = callback;
     }
+
+    @Override
+    public String toString() {
+        return "BaseEvent{" +
+                "id='" + id + '\'' +
+                ", content='" + content + '\'' +
+                ", callback=" + callback +
+                '}';
+    }
 }

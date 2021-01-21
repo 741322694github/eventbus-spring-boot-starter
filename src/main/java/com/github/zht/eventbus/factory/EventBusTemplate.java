@@ -1,5 +1,7 @@
 package com.github.zht.eventbus.factory;
 
+import com.github.zht.eventbus.event.BaseEvent;
+
 /**
  * @Author zht
  * @Description
@@ -8,12 +10,12 @@ package com.github.zht.eventbus.factory;
 public class EventBusTemplate {
 
 
-    public static void post(Object event){
+    public static void post(BaseEvent event){
         DefaultEventBusFactory.post(event);
     }
 
 
-    public static void asyncPost(Object event){
+    public static void asyncPost(BaseEvent event){
         DefaultEventBusFactory.asyncPost(event);
     }
 }

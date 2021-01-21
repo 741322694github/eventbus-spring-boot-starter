@@ -1,6 +1,5 @@
 package com.github.zht.eventbus.configuration;
 
-import com.github.zht.eventbus.factory.DefaultEventBusFactory;
 import com.github.zht.eventbus.factory.EventBusFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;

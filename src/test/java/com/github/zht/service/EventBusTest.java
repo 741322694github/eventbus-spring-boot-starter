@@ -14,9 +14,17 @@ public class EventBusTest extends BaseTest {
     @Test
     public void post(){
         BaseEvent baseEvent = new BaseEvent();
-        baseEvent.setCallback(this::point);
+//        baseEvent.setCallback(this::point);
         baseEvent.setContent("this is eventbus test");
         EventBusTemplate.post(baseEvent);
+    }
+
+    @Test
+    public void asyncPost(){
+        BaseEvent baseEvent = new BaseEvent();
+        baseEvent.setCallback(this::point);
+        baseEvent.setContent("this is async eventbus test");
+        EventBusTemplate.asyncPost(baseEvent);
     }
 
     public Class<Void> point(BaseEvent baseEvent,Throwable throwable){
