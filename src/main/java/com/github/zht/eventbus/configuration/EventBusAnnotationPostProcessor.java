@@ -2,7 +2,7 @@ package com.github.zht.eventbus.configuration;
 
 import com.github.zht.eventbus.annotation.EventBusListener;
 import com.github.zht.eventbus.enums.EventBusMode;
-import com.github.zht.eventbus.factory.EventBusFactory;
+import com.github.zht.eventbus.support.EventBusSupport;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -16,10 +16,10 @@ import java.util.Arrays;
  */
 public class EventBusAnnotationPostProcessor implements BeanPostProcessor {
 
-    private final EventBusFactory eventBusFactory;
+    private final EventBusSupport eventBusSupport;
 
-    public EventBusAnnotationPostProcessor(EventBusFactory eventBusFactory) {
-        this.eventBusFactory = eventBusFactory;
+    public EventBusAnnotationPostProcessor(EventBusSupport eventBusFactory) {
+        this.eventBusSupport = eventBusFactory;
     }
 
     @Override
@@ -33,19 +33,19 @@ public class EventBusAnnotationPostProcessor implements BeanPostProcessor {
         if(aClass.isAnnotationPresent(EventBusListener.class)){
             EventBusListener busListener = bean.getClass().getAnnotation(EventBusListener.class);
             if(EventBusMode.SYNC.equals(busListener.mode())){
-                eventBusFactory.register(bean);
+                eventBusSupport.register(bean);
             }else {
-                eventBusFactory.asyncRegister(bean);
+                eventBusSupport.asyncRegister(bean);
             }
         }else {
             Class<?>[] interfaces = aClass.getInterfaces();
             Arrays.stream(interfaces).filter(c -> "com.github.zht.eventbus.listener.EventBusListener".equals(c.getName()))
                     .findFirst().ifPresent(c -> {
-                eventBusFactory.register(bean);
+                eventBusSupport.register(bean);
             });
             Arrays.stream(interfaces).filter(c -> "com.github.zht.eventbus.listener.AsyncEventBusListener".equals(c.getName()))
                     .findFirst().ifPresent(c -> {
-                eventBusFactory.asyncRegister(bean);
+                eventBusSupport.asyncRegister(bean);
             });
         }
         return bean;

@@ -1,4 +1,4 @@
-package com.github.zht.eventbus.factory;
+package com.github.zht.eventbus.support;
 
 import com.github.zht.eventbus.configuration.EventBusProperties;
 import com.github.zht.eventbus.event.BaseEvent;
@@ -9,8 +9,8 @@ import com.google.common.eventbus.SubscriberExceptionContext;
 import com.google.common.eventbus.SubscriberExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.StringUtils;
 
 import java.util.concurrent.Executor;
@@ -23,21 +23,22 @@ import java.util.concurrent.TimeUnit;
  * @Description
  * @Date 2021/1/18
  */
-@Component
-public class DefaultEventBusFactory implements EventBusFactory {
-    private static final Logger log = LoggerFactory.getLogger(DefaultEventBusFactory.class);
+public class EventBusSupport implements DisposableBean, InitializingBean {
+    private static final Logger log = LoggerFactory.getLogger(EventBusSupport.class);
 
-    @Autowired
-    private EventBusProperties eventBusProperties;
+    private final EventBusProperties eventBusProperties;
 
     private static Executor executor;
     private static EventBus eventBus;
     private static AsyncEventBus asyncEventBus;
 
+    public EventBusSupport(EventBusProperties eventBusProperties) {
+        this.eventBusProperties = eventBusProperties;
+    }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        log.info("EventBus factory init...");
+        log.info("EventBus init...");
         executor = new ThreadPoolExecutor(eventBusProperties.getCorePoolSize(),
                 eventBusProperties.getMaximumPoolSize(),
                 eventBusProperties.getKeepAliveTime(),
@@ -74,30 +75,24 @@ public class DefaultEventBusFactory implements EventBusFactory {
         return eventBusProperties;
     }
 
-    @Override
     public void register(Object listener){
         eventBus.register(listener);
     }
-
-    @Override
     public void asyncRegister(Object listener){
         asyncEventBus.register(listener);
     }
-    @Override
     public void unregister(Object listener){
         eventBus.unregister(listener);
     }
-    @Override
     public void asyncUnRegister(Object listener){
         asyncEventBus.unregister(listener);
     }
 
-    public static void post(BaseEvent event){
+    public void post(BaseEvent event){
         eventBus.post(event);
     }
 
-    public static void asyncPost(BaseEvent event){
+    public void asyncPost(BaseEvent event){
         asyncEventBus.post(event);
     }
-
 }

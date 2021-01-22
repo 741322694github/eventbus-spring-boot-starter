@@ -2,17 +2,27 @@
 基于Spring Boot 2.2.6 + Google Guava 事件总线的 spring-boot-starter 组件，对 Guava Event 做了封装，支持同步事件、异步事件、自定义异常回调钩子，让你发布、订阅事件更简单方便。
 
 ## 特性
-- 使用注解订阅事件
+- 使用注解订阅事件或接口实现
 - 事件发布支持同步事件和异步事件、订阅时决定同步订阅还是异步订阅
 - 支持订阅事件异常时统一处理或回调处理
 
 ## 发布事件
 
-    BaseEvent baseEvent = new BaseEvent();
-    baseEvent.setCallback(this::point);
-    baseEvent.setContent("this is eventbus test");
-    EventBusTemplate.post(baseEvent);
+    @Autowired
+    private EventBusTemplate<BaseEvent> eventBusTemplate;
+
+同步事件
     
+    BaseEvent baseEvent = new BaseEvent();
+    baseEvent.setContent("this is eventbus test");
+    eventBusTemplate.post(baseEvent);
+    
+异步事件
+
+    BaseEvent baseEvent = new BaseEvent();
+    baseEvent.setCallback(this::failCallback);
+    baseEvent.setContent("this is async eventbus test");
+    eventBusTemplate.asyncPost(baseEvent);    
     
 ## 订阅事件
 订阅事件分为两种方式，一种是采用注解的方式，另外一种是采用编码实现接口的方式
